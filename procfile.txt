@@ -1,1 +1,1 @@
-web: gunicorn flashIT:app
+web: gunicorn flashIT:app	
