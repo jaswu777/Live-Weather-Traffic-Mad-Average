@@ -1,0 +1,167 @@
+/* CSS for weatherFormat.html only */
+
+html, body, #map-canvas, #weather-canvas {
+	height: 100%;
+	margin: 2px;
+	padding: 4px;
+	background-color: #999;
+}
+body {
+	overflow-x:hidden;
+}
+#main {
+	background-color: #00FFFF;
+	border-style:solid;
+	border-width:1px;
+}
+#important {
+	position:relative;
+	left:20px;
+}
+#forecast {
+	background-color:#d9534f;
+	border-style:solid;
+	border-width:1px;
+	padding:0px;
+	margin:0px;
+	min-height:100%;
+	min-width:100%;
+}
+#title3 {
+	position:relative;
+	left:345px;
+}
+#live_weather {
+	background-color:#f0ad4e;
+	border-style:solid;
+	border-width:1px;
+}
+#coolio {
+	position:relative;
+	left:520px;
+}
+#traffic_title {
+	position:relative;
+	left:500px;
+}
+#traffic {
+	background-color:#5cb85c;
+	border-style:solid;
+	border-width:1px;
+}
+#image {
+	position:relative;
+	left:350px;
+}
+#titlefirst {
+	background-color:#eee;
+	border-style:solid;
+	border-width:1px;
+}
+#first {
+	position:relative;
+	left:550px;
+}
+#secondblock {
+	background-color:#B0E0E6;
+	border-style:solid;
+	border-width:1px;
+}
+#pretty {
+	position:relative;
+	left:20px;
+}
+#creator {
+	position:relative;
+	left:610px;
+}
+#average {
+	border-style:solid;
+	border-width:1px;
+	background-color:#0099FF;
+	max-width:50%;
+	position:relative;
+	left:340px;
+}
+#avg {
+	position:relative;
+	left:133px;
+	color:#FFFFCC;
+}
+#hawt {
+	border-style:solid;
+	border-width:1px;
+	background-color:#FF0000;
+	max-width:41%;
+	position:relative;
+	left:400px;
+}
+#hot {
+	position:relative;
+	left:165px;
+	color:#FFFFCC;
+}
+#warmy {
+	border-style:solid;
+	border-width:1px;
+	background-color:#FFCC00;
+	max-width:40%;
+	position:relative;
+	left:400px;
+}
+#warm {
+	position:relative;
+	left:155px;
+	color:#FFFFCC;
+}
+#chill {
+	border-style:solid;
+	border-width:1px;
+	background-color:#9999FF;
+	max-width:40%;
+	position:relative;
+	left:400px;
+}
+#chilly {
+	position:relative;
+	left:170px;
+	color:#FFFFCC;
+}
+#cold {
+	border-style:solid;
+	border-width:1px;
+	background-color:#33CCFF;
+	max-width:40.5%;
+	position:relative;
+	left:400px;
+}
+#coldy {
+	position:relative;
+	left:160px;
+	color:#FFFFCC;
+}
+#freezing {
+	border-style:solid;
+	border-width:1px;
+	background-color:#CCFFFF;
+	max-width:40%;
+	position:relative;
+	left:400px;
+}
+#freezingy {
+	position:relative;
+	left:140px;
+	color:#3333FF;
+}
+#southpole {
+	border-style:solid;
+	border-width:1px;
+	background-color:#FFFFFF;
+	max-width:40%;
+	position:relative;
+	left:400px;
+}
+#siberia {
+	position:relative;
+	left:165px;
+}
