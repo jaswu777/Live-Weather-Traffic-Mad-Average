@@ -1,6 +1,6 @@
-from flask import Flask, render_template, jsonify, url_for
+from flask import Flask, render_template, jsonify, url_for, request
 import json, requests, urllib2, time, datetime, calendar
-template = Flask(__name__)
+template = Flask(__name__, static_url_path='', static_folder='Templates') 
 
 @template.route("/")
 def zero_one():
@@ -104,11 +104,91 @@ def weather(city = None, country = None, street = "", state = "", name = "Random
 			length = len(data["list"])
 			traffic_link = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
 			weather_layer = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=weather"
-			css = str(url_for('Templates', filename='Templates/weatherStyle.css'))
-			return render_template('weatherFormat.html', weather = data, length = length, time = time_other, address = address, name = name, map = map_view, localtime = total_time_convert, timezone = timezone, latitude = latitude, longitude = longitude, traffic = traffic_link, weatherlayer = weather_layer, css = css)
+			temp_temperature = 0
+			for j in range(0, length):
+				temp_temperature += (1.8 * (data["list"][j]["main"]["temp"] - 273) + 32)
+			average_temperature = float(temp_temperature)/float(length)
+			average_temperature = str(average_temperature)[0:5]
+			average_temperature = float(average_temperature)
+			return render_template('weatherFormat.html', weather = data, length = length, time = time_other, address = address, name = name, map = map_view, localtime = total_time_convert, timezone = timezone, latitude = latitude, longitude = longitude, traffic = traffic_link, weatherlayer = weather_layer, average = average_temperature)
+			#return jsonify(data) # -> in a json format
+		else:
+			return render_template('ErrorMessage.html', name = name)
+
+@template.route("/live_weather_traffic/")
+def weather_form():
+	return render_template('weatherForm.html') 
+
+@template.route("/live_weather_traffic/", methods = ['POST'])
+def real_weather():
+	name = request.form['name']
+	street = request.form['street']
+	city = request.form['city']
+	state = request.form['state']
+	country = request.form['country']
+	street = street.replace(" ", "_")
+	city = city.replace(" ", "_")
+	state = state.replace(" ", "_")
+	country = country.replace(" ", "_")
+	if name == "" or name == None:
+		name = "Random Person"
+	if city == None or country == None or city == "" or country == "":
+		return "ERROR please go back and try again!"
+	else:
+		now = datetime.datetime.now()
+		time_other = now.strftime("%M %p")
+		hour = now.strftime("%H")
+		if int(hour) > 12:
+			hour = int(hour) - 12
+		elif int(hour) == 00:
+			hour = 12
+		time_other = str(hour) + ":" + time_other
+		current_time = now.strftime("%d/%m/%Y %H:%M")
+		timestamp = time.mktime(time.strptime(current_time, "%d/%m/%Y %H:%M")) * 1.00001035 # For daylight savings time...
+		# * 1.000013000000000000000000000000000000000009 <-- old decimal number time to mutiply before BEFORE daylights saving JUMPING BACK 1 HOUR
+		location_total = street + "," + city + "," + state + "," + country
+		google_url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + location_total + "&sensor=false"
+		google_data = json.loads(urllib2.urlopen(google_url).read())
+		proceed = google_data["status"]
+		if proceed == "OK":
+			address = google_data["results"][0]["formatted_address"]
+			latitude = google_data["results"][0]["geometry"]["location"]["lat"]
+			longitude = google_data["results"][0]["geometry"]["location"]["lng"]
+			google_time = "https://maps.googleapis.com/maps/api/timezone/json?location=" + str(latitude) + "," + str(longitude) + "&timestamp=" + str(timestamp) + "&sensor=false"
+			new_timestamp = json.loads(urllib2.urlopen(google_time).read())
+			if new_timestamp["status"] == "OK":
+				timezone = new_timestamp["timeZoneName"]
+				local_time = float(timestamp) + float(new_timestamp["dstOffset"]) + float(new_timestamp["rawOffset"]) 
+				converted_hour = time.strftime("%H", time.localtime(local_time))
+				converted_hour = int(converted_hour)
+				# Temporary fix. A pretty reliable one compared to the last mutiply by this weird long decimal number... + 4!
+				if int(converted_hour) > 12:
+					converted_hour = int(converted_hour) - 12
+				elif int(converted_hour) == 00:
+					converted_hour = 12
+				converted_minutes = time.strftime("%M", time.localtime(local_time))
+				converted_sign = time.strftime("%p", time.localtime(local_time))
+				converted_date = time.strftime("%m/%d/%Y", time.localtime(local_time))
+				total_time_convert = str(converted_date) + " " + str(converted_hour) + ":" + str(converted_minutes) + " " + str(converted_sign)
+			else:
+				total_time_convert = " Unknown local time for the location entered"
+				timezone = " Unknown timezone"
+			map_view = "http://maps.googleapis.com/maps/api/staticmap?center=" + str(latitude) +"," + str(longitude) + "&zoom=17&size=600x300&maptype=hybrid&markers=color:blue|label:D|" + str(latitude) + "," + str(longitude) + "&sensor=false"
+			url = "http://api.openweathermap.org/data/2.5/forecast?lat=" + str(latitude) + "&lon=" + str(longitude) + "&APPID=b1d4941443746120628c3e81b029fabf"
+			data = json.loads(urllib2.urlopen(url).read())
+			length = len(data["list"])
+			traffic_link = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"
+			weather_layer = "https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=weather"
+			temp_temperature = 0
+			for j in range(0, length):
+				temp_temperature += (1.8 * (data["list"][j]["main"]["temp"] - 273) + 32)
+			average_temperature = float(temp_temperature)/float(length)
+			average_temperature = str(average_temperature)[0:5]
+			average_temperature = float(average_temperature)
+			return render_template('weatherFormat.html', weather = data, length = length, time = time_other, address = address, name = name, map = map_view, localtime = total_time_convert, timezone = timezone, latitude = latitude, longitude = longitude, traffic = traffic_link, weatherlayer = weather_layer, average = average_temperature)
 			#return jsonify(data) # -> in a json format
 		else:
 			return render_template('ErrorMessage.html', name = name)
 
 if __name__ == '__main__':
-	template.run(debug = True) #Set debug to False for production purposes
+	template.run(debug = False) #Set debug to False for production purposes
