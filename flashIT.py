@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, url_for, request
 import json, requests, urllib2, time, datetime, calendar
-template = Flask(__name__, static_url_path='', static_folder='Templates') 
+template = Flask(__name__) 
 
 @template.route("/")
 def zero_one():
