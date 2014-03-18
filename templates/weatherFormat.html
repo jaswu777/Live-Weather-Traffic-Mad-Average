@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="/static/weatherStyle.css">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<title>Hello {{ name }}!</title>
+	<script src={{traffic}}></script>
+	<!--<script src="/static/weatherTraffic.js"></script>-->
+	<script>
+		function initialize() {
+			var myLatLng =  new google.maps.LatLng({{latitude}}, {{longitude}});
+			var mapOptions = {
+				zoom: 14,
+				center: myLatLng
+			}
+
+			var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+			var trafficLayer = new google.maps.TrafficLayer();
+			trafficLayer.setMap(map);
+			var marker = new google.maps.Marker({
+				position: myLatLng,
+				map: map,
+				title: "Your Location!"
+			});
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+	<script src={{weatherlayer}}></script>
+	<!--<script src="/static/weatherReal.js"></script>-->
+	<script>
+		function initializeSecond() {
+			var mapOptions = {
+				zoom: 10,
+				center: new google.maps.LatLng({{latitude}}, {{longitude}})
+			};
+
+			var map = new google.maps.Map(document.getElementById('weather-canvas'), mapOptions);
+			var weatherLayer = new google.maps.weather.WeatherLayer({
+				temperatureUnits: google.maps.weather.TemperatureUnit.FAHRENHEIT
+			});
+
+			weatherLayer.setMap(map);
+
+			var cloudLayer = new google.maps.weather.CloudLayer();
+			cloudLayer.setMap(map);
+
+			var marker = new google.maps.Marker({
+				position: new google.maps.LatLng({{latitude}}, {{longitude}}),
+				map: map,	
+				title: "Your Location Again!"
+			});
+		}
+		google.maps.event.addDomListener(window, 'load', initializeSecond);
+	</script>
+</head>
+<body>
+	<h1><u>Location Of The Local Weather Doppler Radar Nearest The Address</u></h1>
+	<h2>Country: {{ weather["city"]["country"] }}</h2>
+	<h2>City: {{ weather["city"]["name"]}} </h2>
+	<br />
+	<div id="titlefirst">
+	<u><h3 id="first">Based Upon Your Inputs...</h3></u>
+	</div>
+	<!-- <h2>Population: {{ weather["city"]["population"]}} </h2> -->
+	<div id="secondblock">
+	<p id="pretty">Latitude: {{ weather["city"]["coord"]["lat"]}} </p>
+	<p id="pretty">Longitude: {{ weather["city"]["coord"]["lon"]}}</p>
+	<p id="pretty">The current time for you from the computer which you are accessing is: {{time}} </p>
+	<p id="pretty">Your full address including zipcode based on your input is: <u><strong>{{ address }} </strong></u></p>
+	<p id="pretty">The local time for the location entered is: <u><strong>{{localtime}}</strong></u></p>
+	<p id="pretty">Timezone for that location is: {{timezone}}</p>
+	</div>
+	<br />
+	<br />
+	<div id="average">
+	<p id="avg">Average Temperature of This Week's Forecast In Fahrenheit: {{average}}</p>
+	</div>
+	{% if average >= 80 %}
+	<div id="hawt">
+	<p id="hot">It's going to be HOT this week!</p>
+	</div>
+	{% endif %}
+	{% if average >= 50 and average <= 80 %}
+	<div id="warmy">
+	<p id="warm">It's going to be pretty warm this week.</p>
+	</div>
+	{% endif %}
+	{% if average >= 40 and average <= 50 %}
+	<div id="chill">
+	<p id="chilly">It's going to be chilly this week.</p>
+	</div>
+	{% endif %}
+	{% if average >= 32 and average <= 40 %}
+	<div id="cold">
+	<p id="coldy">It's going to be pretty cold this week.</p>
+	</div>
+	{% endif %}
+	{% if average >= 0 and average <= 32 %}
+	<div id="freezing">
+	<p id="freezingy">It's going to be below freezing this week!</p>
+	</div>
+	{% endif %}
+	{% if average <= 0 %}
+	<div id="southpole">
+	<p id="siberia">Where are you? Siberia Russia?</p>
+	</div>
+	{% endif %}
+	<br />
+	<br />	
+	<img id ="image" src={{map}}>
+	<br />
+	<br />
+	<br />
+	<div id="traffic">
+	<h3 id="traffic_title">Live Traffic Below: Play Around!</h3>
+	</div>
+	<div id ="map-canvas"></div>
+	<br />
+	<br />
+	<br />
+	<div id="live_weather">
+	<h3 id="coolio">Live Weather in Picture Format!</h3>
+	</div>
+	<div id="weather-canvas"></div>
+	<br />
+	<br />
+	<br />
+	<div id="forecast">
+	<h3 id="title3">Weather Forecast For The Next Couple Of Days At Every 3 Hour Increments</h3>
+	{% for i in range(0,length) %}
+	<div id="main">
+	<p id="important"><strong><em><u>Weather for this time and date --> {{weather["list"][i]["dt_txt"]}}</u></em></strong></p>
+	<p id="important">Chance of clouds in the sky: {{weather["list"][i]["clouds"]["all"]}}</p>
+	<p id="important">Forecast for this time: {{weather["list"][i]["weather"][0]["description"]}}</p>
+	<p id="important">Windspeed forecast: {{0.6*(weather["list"][i]["wind"]["speed"])}} mph</p>
+	<p id="important">Temperature in Fahrenheit: {{1.8*(weather["list"][i]["main"]["temp"] - 273) + 32}}</p>
+	</div>
+	{% if i != (length - 1) %}
+	<br />
+	{% endif %}
+	{% endfor %}
+	</div>
+	<br />
+	<p id="creator"><em><strong>By Jason Wu</strong></em></p>
+	<br />
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset = "utf-8">
+	<title>Welcome!</title>
+</head>
+<body>
+	<em><u><h1>Live Weather and Traffic Forecasts Are Only A Click Away!</h1></u></em>
+	<form action="/live_weather_traffic/" method="post">
+		<fieldset>
+			<legend>Please Enter Your Information Below</legend>
+			<strong style="color:red">Your Name *Optional</strong><strong>:</strong><input type="text" name="name"><br />
+			<strong style="color:red">Street *Optional</strong><strong>:</strong><input type="text" name="street"><br />
+			<strong>City:</strong><input type="text" name="city" required="required"><br />
+			<strong>State:</strong><input type="text" name="state"><br />
+			<strong>Country:</strong><input type="text" name="country" required="required"><br />
+			<input type="submit" value="Submit" name="submit" />
+			<input type="reset" value="Reset" name="reset" />
+		</fieldset>
+	</form>
+</body>
+</html>
